@@ -1,20 +1,27 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Dimensions } from 'react-native';
+import { WebView } from 'react-native-webview';
+
+const screenDimensions = Dimensions.get('screen');
 
 export default function App() {
+  const scale = screenDimensions.scale || 1;
+  const INJECTED_JAVASCRIPT = `
+    (function() {
+      const meta = document.createElement('meta');
+      meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=${ 1 / scale}, user-scalable=no');
+      meta.setAttribute('name', 'viewport');
+      document.getElementsByTagName('head')[0].appendChild(meta);
+    })();
+  `;
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <WebView
+      source={{ uri: 'https://app.iptvx-app.com/' }}
+      injectedJavaScript={ INJECTED_JAVASCRIPT }
+      setBuiltInZoomControls={ false }
+      javaScriptEnabled={ true }
+      scrollEnabled={ false }
+      style={{ width: screenDimensions.width, height: screenDimensions.height }}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
