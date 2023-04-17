@@ -16,7 +16,7 @@ export default function App() {
 
   return (
     <WebView
-      source={{ uri: 'https://app.iptvx-app.com/' }}
+      source={{ uri: 'http://app.iptvx-app.com/' }}
       injectedJavaScript={ INJECTED_JAVASCRIPT }
       setBuiltInZoomControls={ false }
       javaScriptEnabled={ true }
