@@ -7,7 +7,7 @@ const screenDimensions = Dimensions.get('screen');
 
 export default function App() {
   useKeepAwake();
-  
+
   const webViewRef = useRef(null);
   const scale = screenDimensions.scale || 1;
   const INJECTED_JAVASCRIPT = `
@@ -44,7 +44,7 @@ export default function App() {
   return (
     <WebView
       ref={ webViewRef }
-      source={{ uri: 'http://192.168.1.138:3041/' }}
+      source={{ uri: 'http://app.iptvx-app.com' }}
       injectedJavaScript={ INJECTED_JAVASCRIPT }
       setBuiltInZoomControls={ false }
       javaScriptEnabled={ true }
