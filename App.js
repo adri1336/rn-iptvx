@@ -1,9 +1,14 @@
-import { Dimensions } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { BackHandler, Dimensions } from 'react-native';
 import { WebView } from 'react-native-webview';
+import { useKeepAwake } from 'expo-keep-awake';
 
 const screenDimensions = Dimensions.get('screen');
 
 export default function App() {
+  useKeepAwake();
+  
+  const webViewRef = useRef(null);
   const scale = screenDimensions.scale || 1;
   const INJECTED_JAVASCRIPT = `
     (function() {
@@ -14,9 +19,32 @@ export default function App() {
     })();
   `;
 
+  const injectableGoBackButton = () => {
+    return `
+      (function() {
+        window.postMessage('goBack');
+      })();
+    `;
+  };
+
+  const handleBackButtonPress = () => {
+    try {
+      if(webViewRef && webViewRef?.current)
+      webViewRef.current.injectJavaScript(injectableGoBackButton());
+      return true;
+    }
+    catch(err) { }
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", handleBackButtonPress);
+    return () => BackHandler.removeEventListener("hardwareBackPress", handleBackButtonPress);
+  }, []);
+
   return (
     <WebView
-      source={{ uri: 'http://app.iptvx-app.com/' }}
+      ref={ webViewRef }
+      source={{ uri: 'http://192.168.1.138:3041/' }}
       injectedJavaScript={ INJECTED_JAVASCRIPT }
       setBuiltInZoomControls={ false }
       javaScriptEnabled={ true }
